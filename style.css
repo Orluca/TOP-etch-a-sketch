@@ -14,8 +14,8 @@ body {
 }
 
 #canvas-container {
-  width: 600px;
-  height: 600px;
+  width: 800px;
+  height: 800px;
   margin: 1rem;
 
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -25,4 +25,36 @@ body {
 
 .canvas-cell {
   background-color: red;
+}
+
+/* ---------- RESOLUTION SLIDER ---------- */
+
+/* The background of the slider */
+#resolution-slider {
+  -webkit-appearance: none; /* Overrides the default CSS styles */
+  appearance: none;
+  width: 20%;
+  height: 20px;
+  background: #c18383;
+  /* outline: none; */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+  transition: opacity 0.2s;
+  border-radius: 5px;
+}
+
+/* When mouse is over the slider */
+#resolution-slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The thumb of the slider */
+#resolution-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #04aa6d;
+  cursor: pointer;
 }
