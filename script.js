@@ -45,6 +45,11 @@ function drawing() {
   );
 }
 
+// Resetting the canvas
+function resetCanvas() {
+  canvasCells.forEach((cell) => (cell.style.backgroundColor = "white"));
+}
+
 // ---------- RESOLUTION SLIDER FUNCTIONALITY ----------
 
 // Listens to the resolution slider. If it is moved, it updates the 'resolution' variable to the new value and also updates the onscreen resolution display accordingly.
@@ -64,11 +69,9 @@ resolutionSlider.onchange = function () {
 
 init();
 
-// -------------TESTING AREA----------------
+// BUTTONS
 
-// Test Button
-document.getElementById("reset").addEventListener("click", function () {
-  canvasCells = 0;
-  canvasCells = document.querySelectorAll(".canvas-cell");
-  console.log("pressed");
-});
+// "Reset Canvas" button
+document.querySelector("#btn-reset-canvas").onclick = resetCanvas;
+
+// -------------TESTING AREA----------------
