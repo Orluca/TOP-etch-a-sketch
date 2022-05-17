@@ -1,4 +1,5 @@
 "use strict";
+// Testing lkja sdlkfj asldkfjalksdjfklsjdfkl
 
 // ---------- GENERAL VARIABLES ----------
 let resolution; // Resolution of the canvas and the default value
