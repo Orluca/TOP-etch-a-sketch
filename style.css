@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: bisque;
+}
+
+#canvas-container {
+  width: 600px;
+  height: 600px;
+  margin: 1rem;
+
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+  display: grid;
+}
+
+.canvas-cell {
+  background-color: red;
+}
