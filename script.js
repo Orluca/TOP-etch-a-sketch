@@ -2,6 +2,7 @@
 
 // ---------- GENERAL VARIABLES ----------
 let resolution; // Resolution of the canvas and the default value
+/* let mouseIsPressed = false; // Tracks if the left mouse button is pressed down */
 
 // SELECTOR VARIABLES FOR HTML ELEMENTS
 const container = document.querySelector("#canvas-container"); // The container for the canvas
@@ -32,17 +33,23 @@ function init() {
   resolutionDisplay.textContent = `${resolution} x ${resolution}`; // Initializes the RESOLUTION DISPLAY to the default resolution value
   createCanvas(resolution); // create canvas with the default resolution of 16x16
   canvasCells = document.querySelectorAll(".canvas-cell"); // Get all canvas cells and save them in this variable
-  drawing();
 }
 
-// Change the color of each cell on mouse over.
-function drawing() {
+// Adds an event listener to all canvas cells. This event listener listens to 'mouse overs' and will color the cell when the event occurs.
+function addEventListenersToCells() {
   canvasCells.forEach(
     (cell) =>
       (cell.onmouseover = function changeColor() {
         cell.style.backgroundColor = "blue";
       })
   );
+}
+
+// This function will remove any mouse-over listeners from the cells
+function removeEventListenersFromCells() {
+  canvasCells.forEach((cell) => {
+    cell.onmouseover = null;
+  });
 }
 
 // Resetting the canvas
@@ -64,7 +71,8 @@ resolutionSlider.oninput = function () {
 resolutionSlider.onchange = function () {
   createCanvas(resolution);
   canvasCells = document.querySelectorAll(".canvas-cell"); // Since there are now more/fewer cells, this variable has to be updated as well, otherwise the drawing on mouseover will not work for the newly added cells
-  drawing(); // Re-call the drawing function, so that the new canvasCells get applied to it.
+  addEventListenersToCells(); // Re-call the drawing function, so that the new canvasCells get applied to it.
+  removeEventListenersFromCells(); // For some reason there is no "mouse-up" action being sent after moving the slider, meaning it will start drawing as soon as you hover over the canvas, as if your LMB is stuck. To prevent that from happening this function is being called manually.
 };
 
 init();
@@ -73,5 +81,17 @@ init();
 
 // "Reset Canvas" button
 document.querySelector("#btn-reset-canvas").onclick = resetCanvas;
+
+// TRACK MOUSE
+
+document.onmousedown = function () {
+  /* mouseIsPressed = true; */
+  addEventListenersToCells();
+};
+
+document.onmouseup = function () {
+  /* mouseIsPressed = false; */
+  removeEventListenersFromCells();
+};
 
 // -------------TESTING AREA----------------
