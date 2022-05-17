@@ -7,11 +7,10 @@ let mouseIsPressed = false; // Tracks if the left mouse button is pressed down
 const container = document.querySelector("#canvas-container"); // The container for the canvas
 const resolutionSlider = document.querySelector("#resolution-slider"); // The slider which sets the resolution of the grid
 const resolutionDisplay = document.querySelector("#resolution-display"); // The element that displays in realtime the current resolution set by the slider
-let canvasCells; // All the cells of the canvas
 
 // ---------- FUNCTIONS ----------
 
-// Tracking if the mouse is pressed down
+// For tracking if the mouse is pressed down
 document.onmousedown = () => (mouseIsPressed = true);
 document.onmouseup = () => (mouseIsPressed = false);
 
@@ -22,35 +21,37 @@ function createCanvas(resolution) {
   container.style.gridTemplateColumns = `repeat(${resolution}, 1fr)`;
   container.style.gridTemplateRows = `repeat(${resolution}, 1fr)`;
 
-  // Next, using a loop we create each individual cell, add the 'canvas-cell' class to it and then append the cell to the canvas container.
+  // Next, using a loop we create each individual cell, add the 'canvas-cell' class and some event listeners to it and then append the cell to the canvas container.
   for (let i = 0; i < resolution ** 2; i++) {
     const newCell = document.createElement("div");
     newCell.classList.add("canvas-cell");
-    newCell.addEventListener("mouseover", changeCellColor);
-    newCell.addEventListener("mousedown", changeCellColor); // This one is necessary so that the very first click also changes the cell color
+    newCell.addEventListener("mouseover", changeCellColor); // For drawing
+    newCell.addEventListener("mousedown", changeCellColor); // This one is necessary so that the cell that is under the cursor when clicking the mouse is also colored
     container.appendChild(newCell);
   }
 }
 
 // Initialization
 function init() {
-  resolution = 16; // set default canvas resolution to 16x16
+  resolution = 32; // set default canvas resolution to 16x16
   resolutionDisplay.textContent = `${resolution} x ${resolution}`; // Initializes the RESOLUTION DISPLAY to the default resolution value
   createCanvas(resolution); // create canvas with the default resolution of 16x16
-  canvasCells = document.querySelectorAll(".canvas-cell"); // Get all canvas cells and save them in this variable
 }
 
+// This functions is responsible for coloring the canvas cells when the mouse is pressed down
 function changeCellColor(e) {
   if (e.type === "mouseover" && mouseIsPressed) {
     e.target.style.backgroundColor = "blue";
   }
   if (e.type === "mousedown") {
+    // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
     e.target.style.backgroundColor = "blue";
   }
 }
 
 // Resetting the canvas
 function resetCanvas() {
+  let canvasCells = document.querySelectorAll(".canvas-cell");
   canvasCells.forEach((cell) => (cell.style.backgroundColor = "white"));
 }
 
@@ -67,7 +68,7 @@ resolutionSlider.oninput = function () {
 // To avoid bad performance and lag, which will occur when the resolution is updated with each new value, this is achieved with "onchange", which will only update once the mouse is released.
 resolutionSlider.onchange = function () {
   createCanvas(resolution);
-  canvasCells = document.querySelectorAll(".canvas-cell"); // Since there are now more/fewer cells, this variable has to be updated as well, otherwise the drawing on mouseover will not work for the newly added cells
+  resetCanvas();
 };
 
 init();
