@@ -21,9 +21,9 @@ function createCanvas(resolution) {
 
   // Next, using a loop we create each individual cell, add the 'canvas-cell' class to it and then append the cell to the canvas container.
   for (let i = 0; i < resolution ** 2; i++) {
-    const newDiv = document.createElement("div");
-    newDiv.classList.add("canvas-cell");
-    container.appendChild(newDiv);
+    const newCell = document.createElement("div");
+    newCell.classList.add("canvas-cell");
+    container.appendChild(newCell);
   }
 }
 
@@ -77,7 +77,7 @@ resolutionSlider.onchange = function () {
 
 init();
 
-// BUTTONS
+// ---------- BUTTONS ----------
 
 // "Reset Canvas" button
 document.querySelector("#btn-reset-canvas").onclick = resetCanvas;
