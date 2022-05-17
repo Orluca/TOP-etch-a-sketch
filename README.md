@@ -1,17 +1,12 @@
 # TOP-etch-a-sketch
 
-## Features to implement
+## Important features to implement
 
-- [ ] add a color selection wheel
+- [ ] Add a color selection wheel
+- [ ] Add the rainbow mode
+- [ ] Add an eraser
 
-### Solar System Exploration, 1950s – 1960s
+## Other feature ideas
 
-- [ ] Mercury
-- [x] Venus
-- [x] Earth (Orbit/Moon)
-- [x] Mars
-- [ ] Jupiter
-- [ ] Saturn
-- [ ] Uranus
-- [ ] Neptune
-- [ ] Comet Haley
+- [ ] Color bucket
+- [ ] Add optional grid lines

@@ -19,16 +19,13 @@ body {
   margin: 1rem;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   display: grid;
+  cursor: crosshair;
 }
 
 .canvas-cell {
   background-color: white;
   user-select: none;
 }
-
-/* .canvas-cell:hover {
-  background-color: black;
-} */
 
 /* ---------- RESOLUTION SLIDER ---------- */
 
