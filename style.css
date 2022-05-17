@@ -17,15 +17,17 @@ body {
   width: 800px;
   height: 800px;
   margin: 1rem;
-
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-
   display: grid;
 }
 
 .canvas-cell {
   background-color: red;
 }
+
+/* .canvas-cell:hover {
+  background-color: black;
+} */
 
 /* ---------- RESOLUTION SLIDER ---------- */
 
