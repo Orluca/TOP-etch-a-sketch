@@ -67,3 +67,9 @@ body {
   position: absolute;
   border: 1px solid black;
 }
+
+#active-color {
+  height: 50px;
+  width: 200px;
+  background-color: black;
+}

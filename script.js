@@ -5,14 +5,16 @@ let mouseIsPressed = false; // Tracks if the left mouse button is pressed down
 let activeColor = "rgb(0, 0, 0)"; // Set default color to black
 let activeTool = "pencil";
 let mousePos = {};
+let lastUsedColor; // to temporarily store and restore the active color when switching to the eraser
 
-const joe = colorjoe.rgb("colorjoe", "black", ["currentColor"]);
+const joe = colorjoe.rgb("colorjoe", "black");
 
 // SELECTOR VARIABLES FOR HTML ELEMENTS
 const container = document.querySelector("#canvas-container"); // The container for the canvas
 const resolutionSlider = document.querySelector("#resolution-slider"); // The slider which sets the resolution of the grid
 const resolutionDisplay = document.querySelector("#resolution-display"); // The element that displays in realtime the current resolution set by the slider
 const eyedropperModal = document.querySelector("#eyedropper-modal");
+const activeColorDisplay = document.querySelector("#active-color");
 
 // ---------- FUNCTIONS ----------
 
@@ -41,7 +43,7 @@ function createCanvas(resolution) {
 
 // Initialization
 function init() {
-  resolution = 32; // set default canvas resolution to 16x16
+  resolution = 64; // set default canvas resolution to 16x16
   resolutionDisplay.textContent = `${resolution} x ${resolution}`; // Initializes the RESOLUTION DISPLAY to the default resolution value
   createCanvas(resolution); // create canvas with the default resolution of 16x16
 }
@@ -55,11 +57,11 @@ function eyedropper(e) {
 // This functions is responsible for coloring the canvas cells when the mouse is pressed down
 function changeCellColor(e) {
   if (e.type === "mouseover" && mouseIsPressed) {
-    if (activeTool === "pencil") e.target.style.backgroundColor = activeColor;
+    if (activeTool === "pencil" || activeTool === "eraser") e.target.style.backgroundColor = activeColor;
     if (activeTool === "eyedropper") eyedropper(e);
   }
   if (e.type === "mousedown") {
-    if (activeTool === "pencil") e.target.style.backgroundColor = activeColor; // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
+    if (activeTool === "pencil" || activeTool === "eraser") e.target.style.backgroundColor = activeColor; // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
     if (activeTool === "eyedropper") eyedropper(e);
   }
   if (e.type === "mouseup" && activeTool === "eyedropper") activeTool = "pencil";
@@ -95,14 +97,33 @@ init();
 document.querySelector("#btn-reset-canvas").onclick = resetCanvas;
 
 // Set "activeTool" to whatever tool button has been pressed
-document.querySelector("#btn-draw").addEventListener("click", () => (activeTool = "pencil"));
+document.querySelector("#btn-draw").addEventListener("click", pencilTool);
 document.querySelector("#btn-eyedropper").addEventListener("click", () => (activeTool = "eyedropper"));
-document.querySelector("#btn-rainbow").addEventListener("click", () => (activeTool = "rainbow"));
+
+// Eraser button
+document.querySelector("#btn-eraser").addEventListener("click", eraser);
+
+function pencilTool() {
+  activeTool = "pencil";
+  if (lastUsedColor) activeColor = lastUsedColor;
+}
+
+function eraser() {
+  activeTool = "eraser";
+  lastUsedColor = activeColor;
+  activeColor = "rgb(255,255,255)"; // set active color to white
+}
 
 // ---------- COLOR PICKER ----------
 
 joe.show();
-joe.on("done", (color) => (activeColor = color.css())); // Once you've seleted a color with the picker, set activeColor to said color
+joe.on("done", (color) => changedColor(color)); // Once you've seleted a color with the picker, set activeColor to said color
+
+function changedColor(color) {
+  activeColor = color.css(); // Set the active color to the one you chose in the color picker
+  activeTool = "pencil"; // Set active tool to pencil (if you're currently in eraser mode and switch color, it switches you automatically to pencil mode)
+  activeColorDisplay.style.backgroundColor = activeColor;
+}
 
 // ---------- EYE DROPPER TOOL ----------
 container.addEventListener("mousedown", eyedropperPreview);

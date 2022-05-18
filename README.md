@@ -2,11 +2,13 @@
 
 ## Important features to implement
 
-- [ ] Add a color selection wheel
-- [ ] Add the rainbow mode
-- [ ] Add an eraser
+- [x] Add a color selection wheel
+- [ ] ~~ Add the rainbow mode ~~
+- [x] Add an eraser
 - [ ] Background color changer
-- [ ] Eye dropper tool
+- [x] Eye dropper tool
+- [x] Display for current color
+- [ ] Make active tool buttons glow
 
 ## Other feature ideas
 
