@@ -3,6 +3,9 @@
 let resolution; // Resolution of the canvas and the default value
 let mouseIsPressed = false; // Tracks if the left mouse button is pressed down
 let activeColor = "rgb(0, 0, 0)"; // Set default color to black
+let activeTool = "pencil";
+
+const joe = colorjoe.rgb("colorjoe", "black", ["currentColor"]);
 
 // SELECTOR VARIABLES FOR HTML ELEMENTS
 const container = document.querySelector("#canvas-container"); // The container for the canvas
@@ -28,6 +31,8 @@ function createCanvas(resolution) {
     newCell.classList.add("canvas-cell");
     newCell.addEventListener("mouseover", changeCellColor); // For drawing
     newCell.addEventListener("mousedown", changeCellColor); // This one is necessary so that the cell that is under the cursor when clicking the mouse is also colored
+    newCell.addEventListener("mouseup", changeCellColor); // mouseup is used to switch from the eyedropper back to the drawing tool after releasing the mouse
+
     container.appendChild(newCell);
   }
 }
@@ -39,15 +44,24 @@ function init() {
   createCanvas(resolution); // create canvas with the default resolution of 16x16
 }
 
+function eyedropper(e) {
+  console.log("dropper");
+  let pickedColor = window.getComputedStyle(e.currentTarget).getPropertyValue("background-color");
+  joe.set(pickedColor); // set colorpicker to picked color
+  activeColor = pickedColor;
+}
+
 // This functions is responsible for coloring the canvas cells when the mouse is pressed down
 function changeCellColor(e) {
   if (e.type === "mouseover" && mouseIsPressed) {
-    e.target.style.backgroundColor = activeColor;
+    if (activeTool === "pencil") e.target.style.backgroundColor = activeColor;
+    if (activeTool === "eyedropper") eyedropper(e);
   }
   if (e.type === "mousedown") {
-    // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
-    e.target.style.backgroundColor = activeColor;
+    if (activeTool === "pencil") e.target.style.backgroundColor = activeColor; // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
+    if (activeTool === "eyedropper") eyedropper(e);
   }
+  if (e.type === "mouseup" && activeTool === "eyedropper") activeTool = "pencil";
 }
 
 // Resetting the canvas
@@ -79,8 +93,13 @@ init();
 // "Reset Canvas" button
 document.querySelector("#btn-reset-canvas").onclick = resetCanvas;
 
+// Set "activeTool" to whatever tool button has been pressed
+document.querySelector("#btn-draw").addEventListener("click", () => (activeTool = "pencil"));
+document.querySelector("#btn-eyedropper").addEventListener("click", () => (activeTool = "eyedropper"));
+document.querySelector("#btn-rainbow").addEventListener("click", () => (activeTool = "rainbow"));
+
 // ---------- COLOR PICKER ----------
-const joe = colorjoe.rgb("colorjoe", "black");
+
 joe.show();
 
 joe.on("done", (color) => (activeColor = color.css())); // Once you've seleted a color with the picker, set activeColor to said color
