@@ -4,6 +4,7 @@ let resolution; // Resolution of the canvas and the default value
 let mouseIsPressed = false; // Tracks if the left mouse button is pressed down
 let activeColor = "rgb(0, 0, 0)"; // Set default color to black
 let activeTool = "pencil";
+let mousePos = {};
 
 const joe = colorjoe.rgb("colorjoe", "black", ["currentColor"]);
 
@@ -11,6 +12,7 @@ const joe = colorjoe.rgb("colorjoe", "black", ["currentColor"]);
 const container = document.querySelector("#canvas-container"); // The container for the canvas
 const resolutionSlider = document.querySelector("#resolution-slider"); // The slider which sets the resolution of the grid
 const resolutionDisplay = document.querySelector("#resolution-display"); // The element that displays in realtime the current resolution set by the slider
+const eyedropperModal = document.querySelector("#eyedropper-modal");
 
 // ---------- FUNCTIONS ----------
 
@@ -101,7 +103,26 @@ document.querySelector("#btn-rainbow").addEventListener("click", () => (activeTo
 // ---------- COLOR PICKER ----------
 
 joe.show();
-
 joe.on("done", (color) => (activeColor = color.css())); // Once you've seleted a color with the picker, set activeColor to said color
 
+// ---------- EYE DROPPER TOOL ----------
+container.addEventListener("mousedown", eyedropperPreview);
+container.addEventListener("mouseup", eyedropperPreview);
+container.addEventListener("mousemove", eyedropperPreview);
+
+function eyedropperPreview(e) {
+  if (activeTool === "eyedropper" && mouseIsPressed === true) {
+    mousePos.x = e.pageX + 20;
+    mousePos.y = e.pageY + 20;
+    eyedropperModal.style.left = `${mousePos.x}px`;
+    eyedropperModal.style.top = `${mousePos.y}px`;
+    eyedropperModal.style.backgroundColor = activeColor;
+
+    if (e.type === "mousedown" || e.type === "mousemove") {
+      eyedropperModal.style.display = "block";
+    } else if (e.type === "mouseup") eyedropperModal.style.display = "none";
+  } else {
+    eyedropperModal.style.display = "none";
+  }
+}
 // -------------TESTING AREA----------------
