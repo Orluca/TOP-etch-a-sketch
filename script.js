@@ -47,7 +47,6 @@ function init() {
 }
 
 function eyedropper(e) {
-  console.log("dropper");
   let pickedColor = window.getComputedStyle(e.currentTarget).getPropertyValue("background-color");
   joe.set(pickedColor); // set colorpicker to picked color
   activeColor = pickedColor;
