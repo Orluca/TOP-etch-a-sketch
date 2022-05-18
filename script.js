@@ -2,6 +2,7 @@
 // ---------- GENERAL VARIABLES ----------
 let resolution; // Resolution of the canvas and the default value
 let mouseIsPressed = false; // Tracks if the left mouse button is pressed down
+let activeColor = "rgb(0, 0, 0)"; // Set default color to black
 
 // SELECTOR VARIABLES FOR HTML ELEMENTS
 const container = document.querySelector("#canvas-container"); // The container for the canvas
@@ -41,11 +42,11 @@ function init() {
 // This functions is responsible for coloring the canvas cells when the mouse is pressed down
 function changeCellColor(e) {
   if (e.type === "mouseover" && mouseIsPressed) {
-    e.target.style.backgroundColor = "blue";
+    e.target.style.backgroundColor = activeColor;
   }
   if (e.type === "mousedown") {
     // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
-    e.target.style.backgroundColor = "blue";
+    e.target.style.backgroundColor = activeColor;
   }
 }
 
@@ -77,5 +78,11 @@ init();
 
 // "Reset Canvas" button
 document.querySelector("#btn-reset-canvas").onclick = resetCanvas;
+
+// ---------- COLOR PICKER ----------
+const joe = colorjoe.rgb("colorjoe", "black");
+joe.show();
+
+joe.on("done", (color) => (activeColor = color.css())); // Once you've seleted a color with the picker, set activeColor to said color
 
 // -------------TESTING AREA----------------

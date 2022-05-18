@@ -6,12 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>Etch-A-Sketch</title>
+    <link rel="stylesheet" href="colorjoe/colorjoe.css" />
   </head>
   <body>
     <div id="canvas-container"></div>
     <input type="range" min="8" max="128" value="16" id="resolution-slider" />
     <div id="resolution-display"></div>
+    <div class="colorpicker" id="colorjoe"></div>
     <button id="btn-reset-canvas">Reset canvas</button>
+
+    <script src="colorjoe/colorjoe.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
