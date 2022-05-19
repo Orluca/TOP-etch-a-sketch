@@ -14,4 +14,4 @@
 ## Other feature ideas
 
 - [ ] Color bucket
-- [ ] Add optional grid lines
+- [x] Add optional grid lines

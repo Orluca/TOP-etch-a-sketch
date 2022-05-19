@@ -6,6 +6,7 @@ let activeColor = "rgb(0, 0, 0)"; // Set default color to black
 let activeTool = "pencil";
 let mousePos = {};
 let lastUsedColor; // to temporarily store and restore the active color when switching to the eraser
+let gridIsActive = false;
 
 const joe = colorjoe.rgb("colorjoe", "black");
 
@@ -15,6 +16,7 @@ const resolutionSlider = document.querySelector("#resolution-slider"); // The sl
 const resolutionDisplay = document.querySelector("#resolution-display"); // The element that displays in realtime the current resolution set by the slider
 const eyedropperModal = document.querySelector("#eyedropper-modal");
 const activeColorDisplay = document.querySelector("#active-color");
+const gridToggle = document.querySelector("#toggle-grid");
 
 // ---------- FUNCTIONS ----------
 
@@ -149,8 +151,9 @@ function eyedropperPreview(e) {
 // ------------- GRID LINES FOR CANVAS ----------------
 const canvasCells = document.querySelectorAll(".canvas-cell");
 
+// Turn grid lines on
 function gridOn(resolution) {
-  const borderStyle = "1px solid rgb(150, 150, 150)";
+  const borderStyle = "1px solid rgb(170, 170, 170)";
   // All rows except the last one
   for (let j = 0; j < resolution - 1; j++) {
     for (let i = 0 + resolution * j; i < resolution + resolution * j - 1; i++) {
@@ -166,22 +169,21 @@ function gridOn(resolution) {
   }
 }
 
-gridOn(resolution);
+// Turn grid lines off
+function gridOff() {
+  canvasCells.forEach((cell) => (cell.style.border = "none"));
+}
+
+function toggleGrid() {
+  if (gridIsActive) {
+    gridOff();
+    gridIsActive = false;
+  } else {
+    gridOn(resolution);
+    gridIsActive = true;
+  }
+}
+
+gridToggle.addEventListener("click", toggleGrid);
 
 // -------------TESTING AREA----------------
-
-/* function gridOn(resolution) {
-  let row = 1;
-
-  // One row
-  for (let i = 0; i < resolution - 1; i++) {
-    canvasCells[i].style.borderRight = "1px solid black";
-    canvasCells[i].style.borderBottom = "1px solid black";
-  }
-  canvasCells[resolution - 1].style.borderBottom = "1px solid black";
-  for (let i = 0 + 64; i < resolution + 64 - 1; i++) {
-    canvasCells[i].style.borderRight = "1px solid black";
-    canvasCells[i].style.borderBottom = "1px solid black";
-  }
-  canvasCells[resolution + 64 - 1].style.borderBottom = "1px solid black";
-} */
