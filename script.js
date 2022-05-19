@@ -17,6 +17,8 @@ const resolutionDisplay = document.querySelector("#resolution-display"); // The 
 const eyedropperModal = document.querySelector("#eyedropper-modal");
 const activeColorDisplay = document.querySelector("#active-color");
 const gridToggle = document.querySelector("#toggle-grid");
+const colorDisplayRGB = document.querySelector("#color-name-rgb");
+const colorDisplayHex = document.querySelector("#color-name-hex");
 
 // ---------- FUNCTIONS ----------
 
@@ -51,7 +53,7 @@ function init() {
 }
 
 function eyedropper(e) {
-  let pickedColor = window.getComputedStyle(e.currentTarget).getPropertyValue("background-color");
+  let pickedColor = window.getComputedStyle(e.currentTarget).getPropertyValue("background-color"); //gets the color of the div that is currently under the cursor
   joe.set(pickedColor); // set colorpicker to picked color
   activeColor = pickedColor;
 }
@@ -66,7 +68,10 @@ function changeCellColor(e) {
     if (activeTool === "pencil" || activeTool === "eraser") e.target.style.backgroundColor = activeColor; // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
     if (activeTool === "eyedropper") eyedropper(e);
   }
-  if (e.type === "mouseup" && activeTool === "eyedropper") activeTool = "pencil";
+  if (e.type === "mouseup" && activeTool === "eyedropper") {
+    activeTool = "pencil"; //
+    activeColorDisplay.style.backgroundColor = activeColor;
+  }
 }
 
 // Resetting the canvas
@@ -125,6 +130,8 @@ function changedColor(color) {
   activeColor = color.css(); // Set the active color to the one you chose in the color picker
   activeTool = "pencil"; // Set active tool to pencil (if you're currently in eraser mode and switch color, it switches you automatically to pencil mode)
   activeColorDisplay.style.backgroundColor = activeColor;
+  colorDisplayRGB.innerText = color.css();
+  colorDisplayHex.innerText = color.hex();
 }
 
 // ---------- EYE DROPPER TOOL ----------
@@ -153,7 +160,7 @@ const canvasCells = document.querySelectorAll(".canvas-cell");
 
 // Turn grid lines on
 function gridOn(resolution) {
-  const borderStyle = "1px solid rgb(170, 170, 170)";
+  const borderStyle = "1px solid rgb(200, 200, 200)";
   // All rows except the last one
   for (let j = 0; j < resolution - 1; j++) {
     for (let i = 0 + resolution * j; i < resolution + resolution * j - 1; i++) {
@@ -185,5 +192,7 @@ function toggleGrid() {
 }
 
 gridToggle.addEventListener("click", toggleGrid);
+
+// -------------COLOR DISPLAY----------------
 
 // -------------TESTING AREA----------------
