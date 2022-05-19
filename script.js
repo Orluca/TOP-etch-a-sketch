@@ -68,7 +68,7 @@ function changeCellColor(e) {
   if (e.type === "mousedown") {
     if (activeTool === "pencil" || activeTool === "eraser") e.target.style.backgroundColor = activeColor; // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
     if (activeTool === "eyedropper") eyedropper(e);
-    if (activeTool === "bucket") paintBucket(e.target.id);
+    if (activeTool === "bucket") paintBucket(e.target.id, document.getElementById(e.target.id).style.backgroundColor, activeColor);
   }
   if (e.type === "mouseup" && activeTool === "eyedropper") {
     activeTool = "pencil"; //
@@ -198,68 +198,49 @@ gridToggle.addEventListener("click", toggleGrid);
 
 // -------------PAINT BUCKET TOOL----------------
 
-function paintBucket(cellId) {
-  let cellNr = Number(cellId); // the id/cell number of the 'pixel'/cell under the cursor, when the bucket tool was used
+function paintBucket(cellId, oldColor, newColor) {
+  cellId = Number(cellId);
   let cellAbove; // the cell ABOVE
   let cellBelow; // the cell BELOW
   let cellLeft; // the cell to the LEFT
   let cellRight; // the cell to the RIGHT
-  let cellOrigin = document.getElementById(`${cellNr}`); // the MIDDLE cell
-  const originColor = cellOrigin.style.backgroundColor; // the color of the 'pixel'/cell under the cursor, when the bucket tool was used
+  let cellOrigin = document.getElementById(`${cellId}`); // the MIDDLE cell
 
-  let above = false;
-  let below = false;
-  let left = false;
-  let right = false;
+  cellOrigin.style.backgroundColor = newColor; // the first clicked cell gets colored no matter what
 
-  cellOrigin.style.backgroundColor = activeColor;
+  let aboveExists = false;
+  let belowExists = false;
+  let leftExists = false;
+  let rightExists = false;
+
+  if (cellId - resolution >= 0) aboveExists = true;
+  if (cellId + resolution < resolution ** 2) belowExists = true;
+  if (cellId % resolution != 0) leftExists = true;
+  if ((cellId + 1) % resolution != 0) rightExists = true;
+
+  /* if (!aboveExists && !belowExists && leftExists && rightExists) return; */
+  if (!aboveExists && !belowExists && !leftExists && !rightExists) return;
 
   // THE UPPER CELL
-  if (cellNr - resolution >= 0) {
-    // check if there even is a cell above the middle cell
-    cellAbove = document.getElementById(`${cellNr - resolution}`);
-    if (cellAbove.style.backgroundColor === originColor) {
-      // if the above cell is the same color as the origin color, change it's color the the active color
-      cellAbove.style.backgroundColor = activeColor;
-      above = true;
-    }
+  if (aboveExists && document.getElementById(`${cellId - resolution}`).style.backgroundColor === oldColor) {
+    document.getElementById(`${cellId - resolution}`).style.backgroundColor = newColor;
+    paintBucket(cellId - resolution, oldColor, newColor);
   }
   // THE LOWER CELL
-  if (cellNr + resolution < resolution ** 2) {
-    // check if there even is a cell below the middle cell
-    cellBelow = document.getElementById(`${cellNr + resolution}`);
-    if (cellBelow.style.backgroundColor === originColor) {
-      // if the below cell is the same color as the origin color, change it's color the the active color
-      cellBelow.style.backgroundColor = activeColor;
-      below = true;
-    }
+  if (belowExists && document.getElementById(`${cellId + resolution}`).style.backgroundColor === oldColor) {
+    document.getElementById(`${cellId + resolution}`).style.backgroundColor = newColor;
+    paintBucket(cellId + resolution, oldColor, newColor);
   }
   // THE LEFT CELL
-  if (cellNr % resolution != 0) {
-    // check if there even is a cell to the left
-    cellLeft = document.getElementById(`${cellNr - 1}`);
-    if (cellLeft.style.backgroundColor === originColor) {
-      // if the left cell is the same color as the origin color, change it's color the the active color
-      cellLeft.style.backgroundColor = activeColor;
-      left = true;
-    }
+  if (leftExists && document.getElementById(`${cellId - 1}`).style.backgroundColor === oldColor) {
+    document.getElementById(`${cellId - 1}`).style.backgroundColor = newColor;
+    paintBucket(cellId - 1, oldColor, newColor);
   }
-
   // THE RIGHT CELL
-  if ((cellNr + 1) % resolution != 0) {
-    // check if there even is a cell to the right
-    cellRight = document.getElementById(`${cellNr + 1}`);
-    if (cellRight.style.backgroundColor === originColor) {
-      // if the left cell is the same color as the origin color, change it's color the the active color
-      cellRight.style.backgroundColor = activeColor;
-      right = true;
-    }
+  if (rightExists && document.getElementById(`${cellId + 1}`).style.backgroundColor === oldColor) {
+    document.getElementById(`${cellId + 1}`).style.backgroundColor = newColor;
+    paintBucket(cellId + 1, oldColor, newColor);
   }
-
-  if (above) paintBucket(cellId - resolution);
-  if (below) paintBucket(cellId + resolution);
-  if (left) paintBucket(cellId - 1);
-  if (right) paintBucket(cellId + 1);
 }
 
 // -------------TESTING AREA----------------
