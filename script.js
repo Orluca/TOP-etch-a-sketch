@@ -37,6 +37,7 @@ function createCanvas(resolution) {
   for (let i = 0; i < resolution ** 2; i++) {
     const newCell = document.createElement("div");
     newCell.classList.add("canvas-cell");
+    newCell.setAttribute("id", `${i}`); // Give each cell its own id number to make the paint bucket tool work
     newCell.addEventListener("mouseover", changeCellColor); // For drawing
     newCell.addEventListener("mousedown", changeCellColor); // This one is necessary so that the cell that is under the cursor when clicking the mouse is also colored
     newCell.addEventListener("mouseup", changeCellColor); // mouseup is used to switch from the eyedropper back to the drawing tool after releasing the mouse
@@ -67,6 +68,7 @@ function changeCellColor(e) {
   if (e.type === "mousedown") {
     if (activeTool === "pencil" || activeTool === "eraser") e.target.style.backgroundColor = activeColor; // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
     if (activeTool === "eyedropper") eyedropper(e);
+    if (activeTool === "bucket") paintBucket(e.target.id);
   }
   if (e.type === "mouseup" && activeTool === "eyedropper") {
     activeTool = "pencil"; //
@@ -106,6 +108,7 @@ document.querySelector("#btn-reset-canvas").onclick = resetCanvas;
 // Set "activeTool" to whatever tool button has been pressed
 document.querySelector("#btn-draw").addEventListener("click", pencilTool);
 document.querySelector("#btn-eyedropper").addEventListener("click", () => (activeTool = "eyedropper"));
+document.querySelector("#btn-bucket").addEventListener("click", () => (activeTool = "bucket"));
 
 // Eraser button
 document.querySelector("#btn-eraser").addEventListener("click", eraser);
@@ -193,6 +196,70 @@ function toggleGrid() {
 
 gridToggle.addEventListener("click", toggleGrid);
 
-// -------------COLOR DISPLAY----------------
+// -------------PAINT BUCKET TOOL----------------
+
+function paintBucket(cellId) {
+  let cellNr = Number(cellId); // the id/cell number of the 'pixel'/cell under the cursor, when the bucket tool was used
+  let cellAbove; // the cell ABOVE
+  let cellBelow; // the cell BELOW
+  let cellLeft; // the cell to the LEFT
+  let cellRight; // the cell to the RIGHT
+  let cellOrigin = document.getElementById(`${cellNr}`); // the MIDDLE cell
+  const originColor = cellOrigin.style.backgroundColor; // the color of the 'pixel'/cell under the cursor, when the bucket tool was used
+
+  let above = false;
+  let below = false;
+  let left = false;
+  let right = false;
+
+  cellOrigin.style.backgroundColor = activeColor;
+
+  // THE UPPER CELL
+  if (cellNr - resolution >= 0) {
+    // check if there even is a cell above the middle cell
+    cellAbove = document.getElementById(`${cellNr - resolution}`);
+    if (cellAbove.style.backgroundColor === originColor) {
+      // if the above cell is the same color as the origin color, change it's color the the active color
+      cellAbove.style.backgroundColor = activeColor;
+      above = true;
+    }
+  }
+  // THE LOWER CELL
+  if (cellNr + resolution < resolution ** 2) {
+    // check if there even is a cell below the middle cell
+    cellBelow = document.getElementById(`${cellNr + resolution}`);
+    if (cellBelow.style.backgroundColor === originColor) {
+      // if the below cell is the same color as the origin color, change it's color the the active color
+      cellBelow.style.backgroundColor = activeColor;
+      below = true;
+    }
+  }
+  // THE LEFT CELL
+  if (cellNr % resolution != 0) {
+    // check if there even is a cell to the left
+    cellLeft = document.getElementById(`${cellNr - 1}`);
+    if (cellLeft.style.backgroundColor === originColor) {
+      // if the left cell is the same color as the origin color, change it's color the the active color
+      cellLeft.style.backgroundColor = activeColor;
+      left = true;
+    }
+  }
+
+  // THE RIGHT CELL
+  if ((cellNr + 1) % resolution != 0) {
+    // check if there even is a cell to the right
+    cellRight = document.getElementById(`${cellNr + 1}`);
+    if (cellRight.style.backgroundColor === originColor) {
+      // if the left cell is the same color as the origin color, change it's color the the active color
+      cellRight.style.backgroundColor = activeColor;
+      right = true;
+    }
+  }
+
+  if (above) paintBucket(cellId - resolution);
+  if (below) paintBucket(cellId + resolution);
+  if (left) paintBucket(cellId - 1);
+  if (right) paintBucket(cellId + 1);
+}
 
 // -------------TESTING AREA----------------
