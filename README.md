@@ -9,6 +9,7 @@
 - [x] Eye dropper tool
 - [x] Display for current color
 - [ ] Make active tool buttons glow
+- [ ] display for color name (rgb and hex)
 
 ## Other feature ideas
 

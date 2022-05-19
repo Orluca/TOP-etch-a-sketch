@@ -145,4 +145,43 @@ function eyedropperPreview(e) {
     eyedropperModal.style.display = "none";
   }
 }
+
+// ------------- GRID LINES FOR CANVAS ----------------
+const canvasCells = document.querySelectorAll(".canvas-cell");
+
+function gridOn(resolution) {
+  const borderStyle = "1px solid rgb(150, 150, 150)";
+  // All rows except the last one
+  for (let j = 0; j < resolution - 1; j++) {
+    for (let i = 0 + resolution * j; i < resolution + resolution * j - 1; i++) {
+      canvasCells[i].style.borderRight = borderStyle;
+      canvasCells[i].style.borderBottom = borderStyle;
+    }
+    canvasCells[resolution + resolution * j - 1].style.borderBottom = borderStyle;
+  }
+
+  // The last row
+  for (let i = resolution * (resolution - 1); i < resolution * resolution - 1; i++) {
+    canvasCells[i].style.borderRight = borderStyle;
+  }
+}
+
+gridOn(resolution);
+
 // -------------TESTING AREA----------------
+
+/* function gridOn(resolution) {
+  let row = 1;
+
+  // One row
+  for (let i = 0; i < resolution - 1; i++) {
+    canvasCells[i].style.borderRight = "1px solid black";
+    canvasCells[i].style.borderBottom = "1px solid black";
+  }
+  canvasCells[resolution - 1].style.borderBottom = "1px solid black";
+  for (let i = 0 + 64; i < resolution + 64 - 1; i++) {
+    canvasCells[i].style.borderRight = "1px solid black";
+    canvasCells[i].style.borderBottom = "1px solid black";
+  }
+  canvasCells[resolution + 64 - 1].style.borderBottom = "1px solid black";
+} */
