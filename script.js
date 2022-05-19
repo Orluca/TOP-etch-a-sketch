@@ -82,6 +82,10 @@ function resetCanvas() {
   canvasCells.forEach((cell) => (cell.style.backgroundColor = "white"));
 }
 
+function deleteAllCells() {
+  document.querySelectorAll(".canvas-cell").forEach((cell) => cell.remove());
+}
+
 // ---------- RESOLUTION SLIDER FUNCTIONALITY ----------
 
 // Listens to the resolution slider. If it is moved, it updates the 'resolution' variable to the new value and also updates the onscreen resolution display accordingly.
@@ -94,6 +98,7 @@ resolutionSlider.oninput = function () {
 // Also listens to the resolution slider and updates the actual canvas resolution accordingly.
 // To avoid bad performance and lag, which will occur when the resolution is updated with each new value, this is achieved with "onchange", which will only update once the mouse is released.
 resolutionSlider.onchange = function () {
+  deleteAllCells();
   createCanvas(resolution);
   resetCanvas();
 };
@@ -200,13 +205,8 @@ gridToggle.addEventListener("click", toggleGrid);
 
 function paintBucket(cellId, oldColor, newColor) {
   cellId = Number(cellId);
-  let cellAbove; // the cell ABOVE
-  let cellBelow; // the cell BELOW
-  let cellLeft; // the cell to the LEFT
-  let cellRight; // the cell to the RIGHT
-  let cellOrigin = document.getElementById(`${cellId}`); // the MIDDLE cell
 
-  cellOrigin.style.backgroundColor = newColor; // the first clicked cell gets colored no matter what
+  document.getElementById(`${cellId}`).style.backgroundColor = newColor; // the first clicked cell gets colored no matter what
 
   let aboveExists = false;
   let belowExists = false;
