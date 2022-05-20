@@ -9,21 +9,36 @@
     <link rel="stylesheet" href="colorjoe/colorjoe.css" />
   </head>
   <body>
-    <div id="canvas-container">
-      <div id="eyedropper-modal"></div>
+    <div id="content">
+      <div id="left-side">
+        <div id="canvas-container">
+          <div id="eyedropper-modal"></div>
+        </div>
+      </div>
+      <div id="right-side">
+        <div id="color-section">
+          <div class="colorpicker" id="colorjoe"></div>
+          <div id="active-color">
+            <div id="active-color-display"></div>
+            <div id="color-section-names">
+              <p id="color-name-rgb">rgb(0,0,0)</p>
+              <p id="color-name-hex">#000000</p>
+            </div>
+          </div>
+        </div>
+        <div id="tools">
+          <button id="btn-draw">🖊 Draw</button>
+          <button id="btn-eyedropper">🧪 Eyedropper</button>
+          <button id="btn-eraser">🗑 Eraser</button>
+          <button id="btn-bucket">💧 Bucket</button>
+        </div>
+        <div id="options">
+          <button id="btn-reset-canvas">Reset canvas</button>
+          <button id="toggle-grid">Toggle Grid</button>
+        </div>
+      </div>
     </div>
-    <input type="range" min="8" max="128" value="64" id="resolution-slider" />
-    <div id="resolution-display"></div>
-    <div class="colorpicker" id="colorjoe"></div>
-    <button id="btn-reset-canvas">Reset canvas</button>
-    <button id="btn-draw">Draw</button>
-    <button id="btn-eyedropper">Eyedropper</button>
-    <button id="btn-eraser">Eraser</button>
-    <button id="toggle-grid">Grid</button>
-    <button id="btn-bucket">Bucket</button>
-    <div id="active-color"></div>
-    <p id="color-name-rgb">rgb(0,0,0)</p>
-    <p id="color-name-hex">#000000</p>
+
     <script src="colorjoe/colorjoe.min.js"></script>
     <script src="script.js"></script>
   </body>

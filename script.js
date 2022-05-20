@@ -1,6 +1,6 @@
 "use strict";
 // ---------- GENERAL VARIABLES ----------
-let resolution; // Resolution of the canvas and the default value
+let resolution = 64; // Resolution of the canvas and the default value
 let mouseIsPressed = false; // Tracks if the left mouse button is pressed down
 let activeColor = "rgb(0, 0, 0)"; // Set default color to black
 let activeTool = "pencil";
@@ -15,7 +15,7 @@ const container = document.querySelector("#canvas-container"); // The container 
 const resolutionSlider = document.querySelector("#resolution-slider"); // The slider which sets the resolution of the grid
 const resolutionDisplay = document.querySelector("#resolution-display"); // The element that displays in realtime the current resolution set by the slider
 const eyedropperModal = document.querySelector("#eyedropper-modal");
-const activeColorDisplay = document.querySelector("#active-color");
+const activeColorDisplay = document.querySelector("#active-color-display");
 const gridToggle = document.querySelector("#toggle-grid");
 const colorDisplayRGB = document.querySelector("#color-name-rgb");
 const colorDisplayHex = document.querySelector("#color-name-hex");
@@ -47,9 +47,8 @@ function createCanvas(resolution) {
 }
 
 // Initialization
-function init() {
-  resolution = 64; // set default canvas resolution to 16x16
-  resolutionDisplay.textContent = `${resolution} x ${resolution}`; // Initializes the RESOLUTION DISPLAY to the default resolution value
+function init(reso) {
+  resolution = reso; // set default canvas resolution to 16x16
   createCanvas(resolution); // create canvas with the default resolution of 16x16
 }
 
@@ -82,23 +81,7 @@ function resetCanvas() {
   canvasCells.forEach((cell) => (cell.style.backgroundColor = "white"));
 }
 
-// ---------- RESOLUTION SLIDER FUNCTIONALITY ----------
-
-// Listens to the resolution slider. If it is moved, it updates the 'resolution' variable to the new value and also updates the onscreen resolution display accordingly.
-// This listener is set to "oninput", meaning the display will update IN REALTIME.
-resolutionSlider.oninput = function () {
-  resolution = this.value;
-  resolutionDisplay.textContent = `${resolution} x ${resolution}`;
-};
-
-// Also listens to the resolution slider and updates the actual canvas resolution accordingly.
-// To avoid bad performance and lag, which will occur when the resolution is updated with each new value, this is achieved with "onchange", which will only update once the mouse is released.
-resolutionSlider.onchange = function () {
-  createCanvas(resolution);
-  resetCanvas();
-};
-
-init();
+init(64);
 
 // ---------- BUTTONS ----------
 
@@ -108,7 +91,6 @@ document.querySelector("#btn-reset-canvas").onclick = resetCanvas;
 // Set "activeTool" to whatever tool button has been pressed
 document.querySelector("#btn-draw").addEventListener("click", pencilTool);
 document.querySelector("#btn-eyedropper").addEventListener("click", () => (activeTool = "eyedropper"));
-document.querySelector("#btn-bucket").addEventListener("click", () => (activeTool = "bucket"));
 
 // Eraser button
 document.querySelector("#btn-eraser").addEventListener("click", eraser);
@@ -131,7 +113,7 @@ joe.on("done", (color) => changedColor(color)); // Once you've seleted a color w
 
 function changedColor(color) {
   activeColor = color.css(); // Set the active color to the one you chose in the color picker
-  activeTool = "pencil"; // Set active tool to pencil (if you're currently in eraser mode and switch color, it switches you automatically to pencil mode)
+  if (activeTool === "eraser") activeTool = "pencil"; // Set active tool to pencil (if you're currently in eraser mode and switch color, it switches you automatically to pencil mode)
   activeColorDisplay.style.backgroundColor = activeColor;
   colorDisplayRGB.innerText = color.css();
   colorDisplayHex.innerText = color.hex();
@@ -197,6 +179,8 @@ function toggleGrid() {
 gridToggle.addEventListener("click", toggleGrid);
 
 // -------------PAINT BUCKET TOOL----------------
+
+document.querySelector("#btn-bucket").addEventListener("click", () => (activeTool = "bucket"));
 
 function paintBucket(cellId, oldColor, newColor) {
   cellId = Number(cellId);
