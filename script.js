@@ -48,7 +48,7 @@ function createCanvas(resolution) {
 
 // Initialization
 function init() {
-  resolution = 64; // set default canvas resolution to 16x16
+  resolution = 8; // set default canvas resolution to 16x16
   resolutionDisplay.textContent = `${resolution} x ${resolution}`; // Initializes the RESOLUTION DISPLAY to the default resolution value
   createCanvas(resolution); // create canvas with the default resolution of 16x16
 }
@@ -57,6 +57,47 @@ function eyedropper(e) {
   let pickedColor = window.getComputedStyle(e.currentTarget).getPropertyValue("background-color"); //gets the color of the div that is currently under the cursor
   joe.set(pickedColor); // set colorpicker to picked color
   activeColor = pickedColor;
+}
+
+// -------------PAINT BUCKET TOOL----------------
+
+function paintBucket(cell, oldColor, newColor, rowLength) {
+  let cellId = Number(cell);
+
+  document.getElementById(`${cellId}`).style.backgroundColor = newColor; // the first clicked cell gets colored no matter what
+
+  let aboveExists = false;
+  let belowExists = false;
+  let leftExists = false;
+  let rightExists = false;
+
+  if (cellId - rowLength >= 0) aboveExists = true;
+  if (cellId + rowLength < rowLength ** 2) belowExists = true;
+  if (cellId % rowLength != 0) leftExists = true;
+  if ((cellId + 1) % rowLength != 0) rightExists = true;
+
+  if (!aboveExists && !belowExists && !leftExists && !rightExists) return;
+
+  // THE UPPER CELL
+  if (aboveExists && document.getElementById(`${cellId - rowLength}`).style.backgroundColor === oldColor) {
+    document.getElementById(`${cellId - rowLength}`).style.backgroundColor = newColor;
+    paintBucket(cellId - rowLength, oldColor, newColor);
+  }
+  // THE LOWER CELL
+  if (belowExists && document.getElementById(`${cellId + rowLength}`).style.backgroundColor === oldColor) {
+    document.getElementById(`${cellId + rowLength}`).style.backgroundColor = newColor;
+    paintBucket(cellId + rowLength, oldColor, newColor);
+  }
+  // THE LEFT CELL
+  if (leftExists && document.getElementById(`${cellId - 1}`).style.backgroundColor === oldColor) {
+    document.getElementById(`${cellId - 1}`).style.backgroundColor = newColor;
+    paintBucket(cellId - 1, oldColor, newColor);
+  }
+  // THE RIGHT CELL
+  if (rightExists && document.getElementById(`${cellId + 1}`).style.backgroundColor === oldColor) {
+    document.getElementById(`${cellId + 1}`).style.backgroundColor = newColor;
+    paintBucket(cellId + 1, oldColor, newColor);
+  }
 }
 
 // This functions is responsible for coloring the canvas cells when the mouse is pressed down
@@ -68,7 +109,7 @@ function changeCellColor(e) {
   if (e.type === "mousedown") {
     if (activeTool === "pencil" || activeTool === "eraser") e.target.style.backgroundColor = activeColor; // Only using 'mouseover' will miss the very first cell, so 'mousedown' is necessary as well
     if (activeTool === "eyedropper") eyedropper(e);
-    if (activeTool === "bucket") paintBucket(e.target.id, document.getElementById(e.target.id).style.backgroundColor, activeColor);
+    if (activeTool === "bucket") paintBucket(e.target.id, document.getElementById(e.target.id).style.backgroundColor, activeColor, resolution);
   }
   if (e.type === "mouseup" && activeTool === "eyedropper") {
     activeTool = "pencil"; //
@@ -83,7 +124,8 @@ function resetCanvas() {
 }
 
 function deleteAllCells() {
-  document.querySelectorAll(".canvas-cell").forEach((cell) => cell.remove());
+  // document.querySelectorAll(".canvas-cell").forEach((cell) => cell.remove());
+  container.innerHTML = "";
 }
 
 // ---------- RESOLUTION SLIDER FUNCTIONALITY ----------
@@ -200,47 +242,5 @@ function toggleGrid() {
 }
 
 gridToggle.addEventListener("click", toggleGrid);
-
-// -------------PAINT BUCKET TOOL----------------
-
-function paintBucket(cellId, oldColor, newColor) {
-  cellId = Number(cellId);
-
-  document.getElementById(`${cellId}`).style.backgroundColor = newColor; // the first clicked cell gets colored no matter what
-
-  let aboveExists = false;
-  let belowExists = false;
-  let leftExists = false;
-  let rightExists = false;
-
-  if (cellId - resolution >= 0) aboveExists = true;
-  if (cellId + resolution < resolution ** 2) belowExists = true;
-  if (cellId % resolution != 0) leftExists = true;
-  if ((cellId + 1) % resolution != 0) rightExists = true;
-
-  /* if (!aboveExists && !belowExists && leftExists && rightExists) return; */
-  if (!aboveExists && !belowExists && !leftExists && !rightExists) return;
-
-  // THE UPPER CELL
-  if (aboveExists && document.getElementById(`${cellId - resolution}`).style.backgroundColor === oldColor) {
-    document.getElementById(`${cellId - resolution}`).style.backgroundColor = newColor;
-    paintBucket(cellId - resolution, oldColor, newColor);
-  }
-  // THE LOWER CELL
-  if (belowExists && document.getElementById(`${cellId + resolution}`).style.backgroundColor === oldColor) {
-    document.getElementById(`${cellId + resolution}`).style.backgroundColor = newColor;
-    paintBucket(cellId + resolution, oldColor, newColor);
-  }
-  // THE LEFT CELL
-  if (leftExists && document.getElementById(`${cellId - 1}`).style.backgroundColor === oldColor) {
-    document.getElementById(`${cellId - 1}`).style.backgroundColor = newColor;
-    paintBucket(cellId - 1, oldColor, newColor);
-  }
-  // THE RIGHT CELL
-  if (rightExists && document.getElementById(`${cellId + 1}`).style.backgroundColor === oldColor) {
-    document.getElementById(`${cellId + 1}`).style.backgroundColor = newColor;
-    paintBucket(cellId + 1, oldColor, newColor);
-  }
-}
 
 // -------------TESTING AREA----------------
